@@ -2,20 +2,23 @@ package com.aluracursos.desafio.model;
 
 import java.util.List;
 
-public class DatosLibrosDTO {
+public class DatosLibrosClass {
     private String titulo;
     private List<DatosAutor> autor;
     private List<String> idiomas;
     private Double numeroDeDescargas;
+    public DatosLibrosClass(String titulo, List<DatosAutor> autor, List<String> idiomas, Double numeroDeDescargas) {
+        this.titulo = titulo;
+        this.autor = autor;
+        this.idiomas = idiomas;
+        this.numeroDeDescargas = numeroDeDescargas;
+    }
 
-    @Override
-    public String toString() {
-        return
-                "titulo='" + titulo + '\'' +
-                        ", autor=" + autor +
-                        ", idiomas=" + idiomas +
-                        ", numeroDeDescargas=" + numeroDeDescargas;
-
+    public DatosLibrosClass(DatosLibros datosLibros) {
+        this.titulo= datosLibros.titulo();
+        this.autor = datosLibros.autor();
+        this.idiomas = datosLibros.idiomas();
+        this.numeroDeDescargas= datosLibros.numeroDeDescargas();
     }
 
     public String getTitulo() {
@@ -50,10 +53,13 @@ public class DatosLibrosDTO {
         this.numeroDeDescargas = numeroDeDescargas;
     }
 
-    public DatosLibrosDTO(String titulo, List<DatosAutor> autor, List<String> idiomas, Double numeroDeDescargas) {
-        this.titulo = titulo;
-        this.autor = autor;
-        this.idiomas = idiomas;
-        this.numeroDeDescargas = numeroDeDescargas;
+    @Override
+    public String toString() {
+        return
+                "titulo='" + titulo + '\'' +
+                ", autor=" + autor +
+                ", idiomas=" + idiomas +
+                ", numeroDeDescargas=" + numeroDeDescargas +
+                '}';
     }
 }

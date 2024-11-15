@@ -1,9 +1,19 @@
 package com.aluracursos.desafio.model;
 
-import java.util.List;
+import jakarta.persistence.*;
 
+import java.util.List;
+@Entity
+@Table(name="libros")
 public class DatosLibrosClass {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long Id;
+    @Column(unique = true)
     private String titulo;
+//    @OneToMany
+//    @JoinColumn(name = "author_id")
+    @Transient
     private List<DatosAutor> autor;
     private List<String> idiomas;
     private Double numeroDeDescargas;
@@ -19,6 +29,14 @@ public class DatosLibrosClass {
         this.autor = datosLibros.autor();
         this.idiomas = datosLibros.idiomas();
         this.numeroDeDescargas= datosLibros.numeroDeDescargas();
+    }
+
+    public Long getId() {
+        return Id;
+    }
+
+    public void setId(Long id) {
+        Id = id;
     }
 
     public String getTitulo() {

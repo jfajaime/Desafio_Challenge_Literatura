@@ -79,7 +79,10 @@ public class PrincipalConMenu {
 
         Optional<DatosLibros> libroBusqueda = busquedaNombre.resultado().stream()
                 .filter(l -> l.titulo().toUpperCase().contains(nombreLibro.toUpperCase()))
-                .findFirst();
+                .findFirst().map(libro -> new DatosLibros(Optional.ofNullable(libro.titulo()).orElse("Título Desconocido"),
+                        Optional.ofNullable(libro.autor()).orElse(List.of()),
+                        Optional.ofNullable(libro.idiomas()).orElse(List.of("Idioma desconocido")),
+                        Optional.ofNullable(libro.numeroDeDescargas()).orElse((double) 0)));
 
         if (libroBusqueda.isPresent()) {
             System.out.println("\n     ***Libro Encontrado!***");
@@ -89,14 +92,22 @@ public class PrincipalConMenu {
             System.out.println("Descargas: " + libroBusqueda.get().numeroDeDescargas());
             var datosLibros = libroBusqueda.get();
             Libro libro = new Libro(datosLibros);
-
+//autorOptional existe en la base de datos???
             Autor autor = new Autor(datosLibros.autor().get(0));
-            System.out.println("--------------" + autor);
-//            Optional<Autor> autorOptional = repositoryA.findByNombre(autor.getNombre());
-//            libro.setAutor(autorOptional.get());
-            repositoryA.save(autor);
-//            libro.setAutor(autor);
-            repository.save(libro);
+            System.out.println("--------------");
+            Optional<Autor> autorOptional = repositoryA.findByNombre(autor.getNombre());
+            if (autorOptional.isPresent()) {
+                libro.setAutor(autorOptional.get());
+            } else {
+                repositoryA.save(autor);
+                libro.setAutor(autorOptional.get());
+            }
+            Optional<Libro> libroOptional = repository.findByTituloContainsIgnoreCase(libro.getTitulo());
+            if (libroOptional.isPresent()) {
+                System.out.println(";)");
+            } else {
+                repository.save(libro);
+            }
         } else {
             System.out.println("Libro No Encontrado!!");
         }
@@ -106,11 +117,11 @@ public class PrincipalConMenu {
     private void listaLibros() {
         List<Libro> listarLibros = new ArrayList<>();
         listarLibros = repository.findAll();
-        listarLibros.stream().forEachOrdered(l->{
-            System.out.println("TITULO :"+l.getTitulo()!= null ? l.getTitulo():"N/A");
-            System.out.println("AUTOR: "+l.getAutor().getNombre()!= null ?l.getAutor():"N/A");
-            System.out.println("IDIOMA: "+l.getIdiomas()!= null ?l.getIdiomas():"N/A");
-            System.out.println("CANT. DE DESCARGAS: "+l.getNumeroDeDescargas()!= null ?l.getNumeroDeDescargas():"N/A");
+        listarLibros.stream().forEachOrdered(l -> {
+            System.out.println("TITULO :" + l.getTitulo());
+            System.out.println("AUTOR: " + l.getAutor().getNombre());
+            System.out.println("IDIOMA: " + l.getIdiomas());
+            System.out.println("CANT. DE DESCARGAS: " + l.getNumeroDeDescargas());
             System.out.println("-----------------------------");
         });
     }

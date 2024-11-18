@@ -52,10 +52,9 @@ public class Libro {
     public void setTitulo(String titulo) {
         this.titulo = titulo;
     }
-
-    public Autor getAutor() {
-        return autor;
-    }
+// si es null el autor se cambia el valor para que no falle la aplicacion por nuevo autor
+    public Autor getAutor() { if (autor == null) { Autor autorPredeterminado = new Autor(); autorPredeterminado.setNombre("Autor Desconocido");
+        return autorPredeterminado; } return autor; }
 
     public void setAutor(Autor autor) {
         this.autor = autor;

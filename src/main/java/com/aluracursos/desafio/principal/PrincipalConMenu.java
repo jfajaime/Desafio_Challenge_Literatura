@@ -58,6 +58,10 @@ public class PrincipalConMenu {
                         break;
                     case 4:
                         listarAutoresVivosPorFecha();
+                        break;
+                    case 5:
+                        listarLibrosPorIdioma();
+                        break;
                     case 0:
                         System.out.println("Gracias por utilizar la aplicacion.!");
                         break;
@@ -147,7 +151,38 @@ public class PrincipalConMenu {
             autorVivo.forEach(System.out::println);
             System.out.println("\n-----------------------");
         }
-
     }
+    private void listarLibrosPorIdioma() {
+        var idiomas="null";
+        System.out.println("Elija el idioma de busqueda:");
+        var menu = """
+                1 - Español
+                2 - Ingles
+                2 - Portugues
+                3 - Frances
+                """;
+        System.out.println(menu);
+        var lenguaje = teclado.nextInt();
+        switch (lenguaje) {
+            case 1:
+                idiomas = "es";
+                break;
+            case 2:
+                idiomas = "en";
+                break;
+            case 3:
+                idiomas = "pr";
+                break;
+            case 4:
+                idiomas = "fr";
+                break;
+            default:
+                System.out.println("Opcion incorrecta!");
+        }
+        List<Libro> libroPorIdioma = repository.findByIdiomas(idiomas);
+        System.out.println("Lista de libros en : "+idiomas+"\n");
+        libroPorIdioma.forEach(libro -> System.out.println(libro.getTitulo()+"\n-------------------------"));
+    }
+
 
 }

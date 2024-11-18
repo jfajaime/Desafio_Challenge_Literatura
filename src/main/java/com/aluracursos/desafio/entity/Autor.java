@@ -21,9 +21,9 @@ public class Autor {
     @Override
     public String toString() {
         return
-                " nombre='" + nombre +
-                        ", fechaDeNac='" + fechaDeNac +
-                        ", fechDefunc='" + fechDefunc;
+                "NOMBRE: " + nombre +
+                        "\nFECHA DE NAC.: " + fechaDeNac +
+                        "\nFECHA DEFUNCION: " + fechDefunc;
     }
 
     public Autor(DatosAutor datosAutor) {

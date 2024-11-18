@@ -54,7 +54,7 @@ public class PrincipalConMenu {
                         listaLibros();
                         break;
                     case 3:
-//                        getDatosLibros();
+                        ListarAutoresRegistrados();
                         break;
                     case 0:
                         System.out.println("Gracias por utilizar la aplicacion.!");
@@ -70,7 +70,7 @@ public class PrincipalConMenu {
         teclado.close();
     }
 
-    //        Busqueda de libro por nombre en la base de datos
+    //        Busqueda de libro por nombre
     private void buscarLibroPorTitulo() {
         System.out.println("Ingrese el nombre del libro que desea buscar: ");
         var nombreLibro = teclado.nextLine();
@@ -104,12 +104,12 @@ public class PrincipalConMenu {
             }
             Optional<Libro> libroOptional = repository.findByTituloContainsIgnoreCase(libro.getTitulo());
             if (libroOptional.isPresent()) {
-                System.out.println(";)");
+                System.out.println(";) Este titulo ya se encuentra en la base de datos local");
             } else {
                 repository.save(libro);
             }
         } else {
-            System.out.println("Libro No Encontrado!!");
+            System.out.println("Libro No Encontrado :( ");
         }
         System.out.println("\n--------------------------------");
     }
@@ -126,13 +126,11 @@ public class PrincipalConMenu {
         });
     }
 
-//    private void getDatosLibros() {
-//        System.out.println("Ingrede el nombre del libro que desea buscar: ");
-//        var nombreLibro = teclado.nextLine();
-//        var json = consumoAPI.obtenerDatos(URL_BASE + "?search=" + nombreLibro.replace(" ", ""));
-//        Datos datos= convierteDatos.obtenerDatos(json, Datos.class);
-//        var dato = datos.toString();
-//        Libros libroClass = new Libros(dato);
-//        repository.save(libroClass);
-//    }
+    private void ListarAutoresRegistrados() {
+        var autores = repositoryA.findAll();
+        autores.stream().forEach(a -> {
+            System.out.println(a.toString());
+            System.out.println("-------------------\n");
+        });
+    }
 }

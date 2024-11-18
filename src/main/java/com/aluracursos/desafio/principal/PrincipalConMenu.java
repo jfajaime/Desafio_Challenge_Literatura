@@ -8,6 +8,7 @@ import com.aluracursos.desafio.repository.AutorRepository;
 import com.aluracursos.desafio.repository.LibrosRepository;
 import com.aluracursos.desafio.service.ConsumoAPI;
 import com.aluracursos.desafio.service.ConvierteDatos;
+import org.hibernate.event.spi.SaveOrUpdateEvent;
 
 import java.util.*;
 
@@ -73,7 +74,7 @@ public class PrincipalConMenu {
     private void buscarLibroPorTitulo() {
         System.out.println("Ingrese el nombre del libro que desea buscar: ");
         var nombreLibro = teclado.nextLine();
-        var json = consumoAPI.obtenerDatos(URL_BASE + "?search=" + nombreLibro.replace(" ", ""));
+        var json = consumoAPI.obtenerDatos(URL_BASE + "?search=" + nombreLibro.replace(" ", "+"));
         Datos busquedaNombre = convierteDatos.obtenerDatos(json, Datos.class);
 
         Optional<DatosLibros> libroBusqueda = busquedaNombre.resultado().stream()
@@ -88,17 +89,14 @@ public class PrincipalConMenu {
             System.out.println("Descargas: " + libroBusqueda.get().numeroDeDescargas());
             var datosLibros = libroBusqueda.get();
             Libro libro = new Libro(datosLibros);
+
             Autor autor = new Autor(datosLibros.autor().get(0));
             System.out.println("--------------" + autor);
 //            Optional<Autor> autorOptional = repositoryA.findByNombre(autor.getNombre());
 //            libro.setAutor(autorOptional.get());
             repositoryA.save(autor);
-            libro.setAutor(autor);
+//            libro.setAutor(autor);
             repository.save(libro);
-//            libroBusqueda.ifPresent(datosLibros::add);
-//            getDatosLibros();
-//            Autor autorClass = new Autor();
-
         } else {
             System.out.println("Libro No Encontrado!!");
         }
@@ -106,20 +104,15 @@ public class PrincipalConMenu {
     }
 
     private void listaLibros() {
-//        datosLibros.forEach(l-> System.out.println("-------------libro---------------\n"
-//                        + "TITULO: " + l.titulo()
-//                        + ", AUTOR: " + l.autor().get(0).nombre()
-//                        + ", IDIOMA: " + l.idiomas().get(0)
-//                        + ", Cant. de Descargas: " + l.numeroDeDescargas()
-//                        + "\n"
-//                ));
-//        List<DatosLibrosClass> datosLibrosClasses = new ArrayList<>();
-//        datosLibrosClasses=datosLibros.stream()
-//                .map(l->new DatosLibrosClass(l))
-//                .collect(Collectors.toList());
-//Si creamos un enum de idiomas se aplica el siguiente stream para ordenar por idiomas
-//        datosLibrosClasses.stream().sorted(Comparator.comparing(DatosLibros::getIdioma));
-
+        List<Libro> listarLibros = new ArrayList<>();
+        listarLibros = repository.findAll();
+        listarLibros.stream().forEachOrdered(l->{
+            System.out.println("TITULO :"+l.getTitulo()!= null ? l.getTitulo():"N/A");
+            System.out.println("AUTOR: "+l.getAutor().getNombre()!= null ?l.getAutor():"N/A");
+            System.out.println("IDIOMA: "+l.getIdiomas()!= null ?l.getIdiomas():"N/A");
+            System.out.println("CANT. DE DESCARGAS: "+l.getNumeroDeDescargas()!= null ?l.getNumeroDeDescargas():"N/A");
+            System.out.println("-----------------------------");
+        });
     }
 
 //    private void getDatosLibros() {

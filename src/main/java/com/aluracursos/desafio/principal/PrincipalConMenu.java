@@ -56,6 +56,8 @@ public class PrincipalConMenu {
                     case 3:
                         ListarAutoresRegistrados();
                         break;
+                    case 4:
+                        listarAutoresVivosPorFecha();
                     case 0:
                         System.out.println("Gracias por utilizar la aplicacion.!");
                         break;
@@ -133,4 +135,19 @@ public class PrincipalConMenu {
             System.out.println("-------------------\n");
         });
     }
+    private void listarAutoresVivosPorFecha() {
+        System.out.println("Ingrese el año");
+        var año = teclado.nextInt();
+        var respuesta = repositoryA.listarAutoresVivosPorFecha(año);
+        if (respuesta.isEmpty()) {
+            System.out.println("No se encontraron autores vivos para el año selecionado :(\n");
+        } else {
+            System.out.println("Autores activos ;) en el año: "+año+"\n");
+            List<Autor> autorVivo = respuesta;
+            autorVivo.forEach(System.out::println);
+            System.out.println("\n-----------------------");
+        }
+
+    }
+
 }

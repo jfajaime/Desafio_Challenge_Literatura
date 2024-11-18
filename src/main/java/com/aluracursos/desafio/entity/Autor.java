@@ -21,7 +21,7 @@ public class Autor {
     @Override
     public String toString() {
         return
-                "NOMBRE: " + nombre +
+                "\nNOMBRE: " + nombre +
                         "\nFECHA DE NAC.: " + fechaDeNac +
                         "\nFECHA DEFUNCION: " + fechDefunc;
     }

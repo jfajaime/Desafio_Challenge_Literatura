@@ -1,21 +1,28 @@
 package com.aluracursos.desafio.principal;
 
+import com.aluracursos.desafio.entity.Autor;
+import com.aluracursos.desafio.entity.Libro;
 import com.aluracursos.desafio.model.Datos;
 import com.aluracursos.desafio.model.DatosLibros;
-import com.aluracursos.desafio.model.DatosLibrosClass;
+import com.aluracursos.desafio.repository.AutorRepository;
+import com.aluracursos.desafio.repository.LibrosRepository;
 import com.aluracursos.desafio.service.ConsumoAPI;
 import com.aluracursos.desafio.service.ConvierteDatos;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class PrincipalConMenu {
     private ConsumoAPI consumoAPI = new ConsumoAPI();
     private ConvierteDatos convierteDatos = new ConvierteDatos();
     private static final String URL_BASE = "https://gutendex.com/books/";
     Scanner teclado = new Scanner(System.in);
-    private List<Datos> datosGral = new ArrayList<>();
-    private List<DatosLibros> datosLibros = new ArrayList<>();
+    private AutorRepository repositoryA;
+    private LibrosRepository repository;
+
+    public PrincipalConMenu(LibrosRepository repositorio, AutorRepository repositorioA) {
+        this.repository = repositorio;
+        this.repositoryA = repositorioA;
+    }
 
     public void muestraMenu() {
         Scanner teclado = new Scanner(System.in);
@@ -23,11 +30,11 @@ public class PrincipalConMenu {
 
         while (opcion != 0) {
             String menu = """
-                    1 - Buscar libros por titulo
-                    2 - Listar libros registrados
+                    1 - Buscar libro por titulo
+                    2 - Listar libro registrados
                     3 - Listar autores registrados
                     4 - Listar autores vivos en un determinado año
-                    5 - Listar libros por idioma
+                    5 - Listar libro por idioma
                     0 - Salir
                     - Ingrese la opcion deseada a continuacion: !
                     """;
@@ -46,7 +53,7 @@ public class PrincipalConMenu {
                         listaLibros();
                         break;
                     case 3:
-                        getDatosLibros();
+//                        getDatosLibros();
                         break;
                     case 0:
                         System.out.println("Gracias por utilizar la aplicacion.!");
@@ -61,11 +68,12 @@ public class PrincipalConMenu {
         }
         teclado.close();
     }
+
     //        Busqueda de libro por nombre en la base de datos
     private void buscarLibroPorTitulo() {
-        System.out.println("Ingrede el nombre del libro que desea buscar: ");
+        System.out.println("Ingrese el nombre del libro que desea buscar: ");
         var nombreLibro = teclado.nextLine();
-        String json = consumoAPI.obtenerDatos(URL_BASE + "?search=" + nombreLibro.replace(" ", ""));
+        var json = consumoAPI.obtenerDatos(URL_BASE + "?search=" + nombreLibro.replace(" ", ""));
         Datos busquedaNombre = convierteDatos.obtenerDatos(json, Datos.class);
 
         Optional<DatosLibros> libroBusqueda = busquedaNombre.resultado().stream()
@@ -74,11 +82,23 @@ public class PrincipalConMenu {
 
         if (libroBusqueda.isPresent()) {
             System.out.println("\n     ***Libro Encontrado!***");
-            System.out.println("Titulo: "+libroBusqueda.get().titulo());
-            System.out.println("Autor: "+libroBusqueda.get().autor().get(0).nombre());
-            System.out.println("Idioma: "+libroBusqueda.get().idiomas().get(0));
-            System.out.println("Descargas: "+libroBusqueda.get().numeroDeDescargas());
-            libroBusqueda.ifPresent(datosLibros::add);
+            System.out.println("Titulo: " + libroBusqueda.get().titulo());
+            System.out.println("Autor: " + libroBusqueda.get().autor().get(0).nombre());
+            System.out.println("Idioma: " + libroBusqueda.get().idiomas().get(0));
+            System.out.println("Descargas: " + libroBusqueda.get().numeroDeDescargas());
+            var datosLibros = libroBusqueda.get();
+            Libro libro = new Libro(datosLibros);
+            Autor autor = new Autor(datosLibros.autor().get(0));
+            System.out.println("--------------" + autor);
+//            Optional<Autor> autorOptional = repositoryA.findByNombre(autor.getNombre());
+//            libro.setAutor(autorOptional.get());
+            repositoryA.save(autor);
+            libro.setAutor(autor);
+            repository.save(libro);
+//            libroBusqueda.ifPresent(datosLibros::add);
+//            getDatosLibros();
+//            Autor autorClass = new Autor();
+
         } else {
             System.out.println("Libro No Encontrado!!");
         }
@@ -86,13 +106,13 @@ public class PrincipalConMenu {
     }
 
     private void listaLibros() {
-        datosLibros.forEach(l-> System.out.println("-------------libro---------------\n"
-                        + "TITULO: " + l.titulo()
-                        + ", AUTOR: " + l.autor().get(0).nombre()
-                        + ", IDIOMA: " + l.idiomas().get(0)
-                        + ", Cant. de Descargas: " + l.numeroDeDescargas()
-                        + "\n"
-                ));
+//        datosLibros.forEach(l-> System.out.println("-------------libro---------------\n"
+//                        + "TITULO: " + l.titulo()
+//                        + ", AUTOR: " + l.autor().get(0).nombre()
+//                        + ", IDIOMA: " + l.idiomas().get(0)
+//                        + ", Cant. de Descargas: " + l.numeroDeDescargas()
+//                        + "\n"
+//                ));
 //        List<DatosLibrosClass> datosLibrosClasses = new ArrayList<>();
 //        datosLibrosClasses=datosLibros.stream()
 //                .map(l->new DatosLibrosClass(l))
@@ -102,11 +122,13 @@ public class PrincipalConMenu {
 
     }
 
-    private void getDatosLibros() {
-        System.out.println("Ingrede el nombre del libro que desea buscar: ");
-        var nombreLibro = teclado.nextLine();
-        var json = consumoAPI.obtenerDatos(URL_BASE + "?search=" + nombreLibro.replace(" ", ""));
-        Datos datos= convierteDatos.obtenerDatos(json, Datos.class);
-        System.out.println(datos);
-    }
+//    private void getDatosLibros() {
+//        System.out.println("Ingrede el nombre del libro que desea buscar: ");
+//        var nombreLibro = teclado.nextLine();
+//        var json = consumoAPI.obtenerDatos(URL_BASE + "?search=" + nombreLibro.replace(" ", ""));
+//        Datos datos= convierteDatos.obtenerDatos(json, Datos.class);
+//        var dato = datos.toString();
+//        Libros libroClass = new Libros(dato);
+//        repository.save(libroClass);
+//    }
 }

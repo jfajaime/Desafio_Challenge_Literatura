@@ -3,7 +3,7 @@ Descripción
 Esta es una API de literatura desarrollada en Java utilizando Spring Boot. La API consume datos de la API de Gutendex y persiste la información en una base de datos PostgreSQL.
 
 🚀 Requisitos
-Java 11 o superior
+Java 14 o superior
 
 Maven 3.6.3 o superior
 

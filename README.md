@@ -13,7 +13,7 @@ PostgreSQL 12 o superior
 Clona el repositorio:
 
 sh
-git clone https://github.com/tu-usuario/literatura-api.git
+(https://github.com/jfajaime/Desafio_Challenge_Literatura.git)
 cd literatura-api
 Configura la base de datos PostgreSQL:
 
